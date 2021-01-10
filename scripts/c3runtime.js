@@ -2956,6 +2956,26 @@ inst.GetBehaviorInstanceFromCtor(C3.Behaviors.scrollto);if(!behInst||!behInst.Ge
 'use strict';{const C3=self.C3;C3.Behaviors.scrollto.Exps={}};
 
 
+'use strict';{const C3=self.C3;C3.Behaviors.Flash=class FlashBehavior extends C3.SDKBehaviorBase{constructor(opts){super(opts)}Release(){super.Release()}}};
+
+
+'use strict';{const C3=self.C3;C3.Behaviors.Flash.Type=class FlashType extends C3.SDKBehaviorTypeBase{constructor(behaviorType){super(behaviorType)}Release(){super.Release()}OnCreate(){}}};
+
+
+'use strict';{const C3=self.C3;C3.Behaviors.Flash.Instance=class FlashInstance extends C3.SDKBehaviorInstanceBase{constructor(behInst,properties){super(behInst);this._onTime=0;this._offTime=0;this._stage=0;this._stageTimeLeft=0;this._timeLeft=0;this._StartTicking()}Release(){super.Release()}SaveToJson(){return{"on":this._onTime,"off":this._offTime,"s":this._stage,"stl":this._stageTimeLeft,"tl":this._timeLeft}}LoadFromJson(o){this._onTime=o["on"];this._offTime=o["off"];this._stage=o["s"];this._stageTimeLeft=
+o["stl"];this._timeLeft=o["tl"]===null?Infinity:o["tl"]}Tick(){if(this._timeLeft<=0)return;const dt=this._runtime.GetDt(this._inst);this._timeLeft-=dt;if(this._timeLeft<=0){this._timeLeft=0;this._inst.GetWorldInfo().SetVisible(true);this._runtime.UpdateRender();return this.DebugTrigger(C3.Behaviors.Flash.Cnds.OnFlashEnded)}this._stageTimeLeft-=dt;if(this._stageTimeLeft<=0){if(this._stage===0){this._inst.GetWorldInfo().SetVisible(false);this._stage=1;this._stageTimeLeft+=this._offTime}else{this._inst.GetWorldInfo().SetVisible(true);
+this._stage=0;this._stageTimeLeft+=this._onTime}this._runtime.UpdateRender()}}GetDebuggerProperties(){const prefix="behaviors.flash.debugger";return[{title:"$"+this.GetBehaviorType().GetName(),properties:[{name:prefix+".on-time",value:this._onTime,onedit:v=>this._onTime=v},{name:prefix+".off-time",value:this._offTime,onedit:v=>this._offTime=v},{name:prefix+".is-flashing",value:this._timeLeft>0},{name:prefix+".time-left",value:this._timeLeft}]}]}}};
+
+
+'use strict';{const C3=self.C3;C3.Behaviors.Flash.Cnds={IsFlashing(){return this._timeLeft>0},OnFlashEnded(){return true}}};
+
+
+'use strict';{const C3=self.C3;C3.Behaviors.Flash.Acts={Flash(on,off,dur){this._onTime=on;this._offTime=off;this._stage=1;this._stageTimeLeft=off;this._timeLeft=dur;this._inst.GetWorldInfo().SetVisible(false);this._runtime.UpdateRender()},StopFlashing(){this._timeLeft=0;this._inst.GetWorldInfo().SetVisible(true);this._runtime.UpdateRender()}}};
+
+
+'use strict';{const C3=self.C3;C3.Behaviors.Flash.Exps={}};
+
+
 "use strict"
 {
 	const C3 = self.C3;
@@ -2971,6 +2991,7 @@ inst.GetBehaviorInstanceFromCtor(C3.Behaviors.scrollto);if(!behInst||!behInst.Ge
 		C3.Plugins.Sprite,
 		C3.Behaviors.MoveTo,
 		C3.Behaviors.scrollto,
+		C3.Behaviors.Flash,
 		C3.Plugins.System.Cnds.OnLayoutStart,
 		C3.Plugins.System.Acts.SetBoolVar,
 		C3.Plugins.Timeline.Acts.PlayTimeline,
@@ -2991,6 +3012,8 @@ inst.GetBehaviorInstanceFromCtor(C3.Behaviors.scrollto);if(!behInst||!behInst.Ge
 		C3.Plugins.System.Exps.random,
 		C3.Plugins.Arr.Exps.Width,
 		C3.Plugins.Arr.Exps.At,
+		C3.Plugins.System.Exps.choose,
+		C3.Plugins.Sprite.Acts.SetAnim,
 		C3.Plugins.System.Cnds.EveryTick,
 		C3.Plugins.Spritefont2.Acts.SetText,
 		C3.Plugins.System.Cnds.CompareVar,
@@ -3003,9 +3026,11 @@ inst.GetBehaviorInstanceFromCtor(C3.Behaviors.scrollto);if(!behInst||!behInst.Ge
 		C3.Plugins.Sprite.Exps.Y,
 		C3.Plugins.System.Cnds.Else,
 		C3.Plugins.System.Cnds.For,
+		C3.Plugins.System.Exps.len,
 		C3.Plugins.System.Cnds.Compare,
 		C3.Plugins.System.Exps.loopindex,
-		C3.Plugins.System.Exps.len,
+		C3.Plugins.System.Cnds.While,
+		C3.Plugins.System.Exps.find,
 		C3.Plugins.Sprite.Cnds.PickByUID,
 		C3.Plugins.Browser.Acts.ConsoleLog,
 		C3.Plugins.System.Acts.CreateObject,
@@ -3016,7 +3041,6 @@ inst.GetBehaviorInstanceFromCtor(C3.Behaviors.scrollto);if(!behInst||!behInst.Ge
 		C3.Plugins.Sprite.Exps.UID,
 		C3.Plugins.Sprite.Exps.ImagePointX,
 		C3.Plugins.Sprite.Exps.ImagePointY,
-		C3.Plugins.Sprite.Acts.SetAnim,
 		C3.Plugins.Sprite.Acts.SetX,
 		C3.Behaviors.Pin.Acts.Unpin,
 		C3.Plugins.Touch.Cnds.OnTouchStart,
@@ -3033,19 +3057,23 @@ inst.GetBehaviorInstanceFromCtor(C3.Behaviors.scrollto);if(!behInst||!behInst.Ge
 		C3.Plugins.Sprite.Acts.RotateTowardAngle,
 		C3.Behaviors.MoveTo.Cnds.OnArrived,
 		C3.Plugins.Text.Exps.Text,
+		C3.Plugins.System.Acts.AddVar,
 		C3.Plugins.System.Exps.canvastolayerx,
 		C3.Plugins.System.Exps.layertocanvasx,
 		C3.Plugins.System.Exps.layertocanvasy,
 		C3.Plugins.System.Exps.canvastolayery,
 		C3.Behaviors.MoveTo.Acts.MoveToObject,
-		C3.Plugins.System.Acts.AddVar,
+		C3.Behaviors.MoveTo.Acts.Stop,
+		C3.Plugins.System.Acts.SubVar,
 		C3.Plugins.Sprite.Cnds.CompareInstanceVar,
+		C3.Behaviors.Flash.Acts.Flash,
+		C3.Plugins.Sprite.Acts.Destroy,
 		C3.Plugins.System.Cnds.LayerVisible,
 		C3.Plugins.Timeline.Cnds.IsPausedByTags,
-		C3.Plugins.System.Acts.ResetGlobals,
-		C3.Plugins.System.Acts.RestartLayout,
 		C3.Plugins.Sprite.Cnds.OnCollision,
-		C3.Plugins.Sprite.Acts.Destroy,
+		C3.Plugins.System.Cnds.PickLastCreated,
+		C3.Plugins.Sprite.Acts.SetVisible,
+		C3.Plugins.Timeline.Acts.StopAllTimelines,
 		C3.Plugins.Sprite.Acts.SetOpacity,
 		C3.Plugins.Timeline.Acts.SetTimelineTimeByTags,
 		C3.Plugins.Arr.Acts.Push,
@@ -3082,6 +3110,9 @@ inst.GetBehaviorInstanceFromCtor(C3.Behaviors.scrollto);if(!behInst||!behInst.Ge
 		{failed: 0},
 		{Clear: 0},
 		{ReplayBtn: 0},
+		{no: 0},
+		{Flash: 0},
+		{heart: 0},
 		{gamePhase: 0},
 		{PHASE_POPULATE_TOWER: 0},
 		{PHASE_ADJUST_TOWER: 0},
@@ -3091,6 +3122,8 @@ inst.GetBehaviorInstanceFromCtor(C3.Behaviors.scrollto);if(!behInst||!behInst.Ge
 		{indexCorrectChar: 0},
 		{startTowerX: 0},
 		{widthScreen: 0},
+		{wrongChar: 0},
+		{charPut: 0},
 		{touchedWall: 0},
 		{allWords: 0},
 		{questionNo: 0},
@@ -3106,7 +3139,16 @@ inst.GetBehaviorInstanceFromCtor(C3.Behaviors.scrollto);if(!behInst||!behInst.Ge
 		{plankDrop: 0},
 		{lastPlankId: 0},
 		{lastTowerId: 0},
-		{playerStar: 0}
+		{playerStar: 0},
+		{playerLife: 0},
+		{correctAnswer: 0},
+		{firstPlay: 0},
+		{resultAction: 0},
+		{ACTION_RESTART: 0},
+		{ACTION_HOME: 0},
+		{ACTION_RESPAWN: 0},
+		{mapNo: 0},
+		{towerNo: 0}
 	];
 }
 
@@ -3236,6 +3278,19 @@ inst.GetBehaviorInstanceFromCtor(C3.Behaviors.scrollto);if(!behInst||!behInst.Ge
 		},
 		() => 4,
 		() => "populate",
+		() => 3,
+		p => {
+			const f0 = p._GetNode(0).GetBoundMethod();
+			return () => f0(1, 2, 3);
+		},
+		p => {
+			const f0 = p._GetNode(0).GetBoundMethod();
+			return () => Math.round(f0(0, 9));
+		},
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => and("map", v0.GetValue());
+		},
 		() => "question",
 		p => {
 			const n0 = p._GetNode(0);
@@ -3267,17 +3322,25 @@ inst.GetBehaviorInstanceFromCtor(C3.Behaviors.scrollto);if(!behInst||!behInst.Ge
 			const v1 = p._GetNode(1).GetVar();
 			return () => Math.round(f0(1, (v1.GetValue() - 1)));
 		},
-		() => 1920,
-		() => 3,
+		() => 1200,
 		p => {
 			const f0 = p._GetNode(0).GetBoundMethod();
 			const v1 = p._GetNode(1).GetVar();
 			return () => Math.round(f0(0, (v1.GetValue() - 1)));
 		},
-		() => 1500,
+		() => 1000,
 		p => {
 			const v0 = p._GetNode(0).GetVar();
 			return () => (v0.GetValue() - 1);
+		},
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			const f1 = p._GetNode(1).GetBoundMethod();
+			const v2 = p._GetNode(2).GetVar();
+			const f3 = p._GetNode(3).GetBoundMethod();
+			const f4 = p._GetNode(4).GetBoundMethod();
+			const v5 = p._GetNode(5).GetVar();
+			return () => (v0.GetValue() + f1(v2.GetValue(), Math.round(f3(0, (f4(v5.GetValue()) - 1))), 1));
 		},
 		p => {
 			const f0 = p._GetNode(0).GetBoundMethod();
@@ -3289,13 +3352,10 @@ inst.GetBehaviorInstanceFromCtor(C3.Behaviors.scrollto);if(!behInst||!behInst.Ge
 			return () => (v0.GetValue() + v1.GetValue());
 		},
 		p => {
-			const v0 = p._GetNode(0).GetVar();
-			const f1 = p._GetNode(1).GetBoundMethod();
+			const f0 = p._GetNode(0).GetBoundMethod();
+			const v1 = p._GetNode(1).GetVar();
 			const v2 = p._GetNode(2).GetVar();
-			const f3 = p._GetNode(3).GetBoundMethod();
-			const f4 = p._GetNode(4).GetBoundMethod();
-			const v5 = p._GetNode(5).GetVar();
-			return () => (v0.GetValue() + f1(v2.GetValue(), Math.round(f3(0, (f4(v5.GetValue()) - 1))), 1));
+			return () => f0(v1.GetValue(), v2.GetValue());
 		},
 		p => {
 			const v0 = p._GetNode(0).GetVar();
@@ -3336,14 +3396,15 @@ inst.GetBehaviorInstanceFromCtor(C3.Behaviors.scrollto);if(!behInst||!behInst.Ge
 		() => "answering",
 		() => 100,
 		() => 270,
+		() => 1500,
 		p => {
 			const n0 = p._GetNode(0);
-			return () => (n0.ExpObject() + 20);
+			return () => (n0.ExpObject() + 10);
 		},
 		() => 500,
 		p => {
 			const n0 = p._GetNode(0);
-			return () => (n0.ExpObject() - 25);
+			return () => (n0.ExpObject() - 15);
 		},
 		() => 360,
 		() => "result",
@@ -3351,10 +3412,23 @@ inst.GetBehaviorInstanceFromCtor(C3.Behaviors.scrollto);if(!behInst||!behInst.Ge
 			const n0 = p._GetNode(0);
 			return () => n0.ExpObject(1);
 		},
+		() => "walk",
 		p => {
 			const v0 = p._GetNode(0).GetVar();
 			const n1 = p._GetNode(1);
 			return () => (v0.GetValue() + n1.ExpObject());
+		},
+		p => {
+			const f0 = p._GetNode(0).GetBoundMethod();
+			const v1 = p._GetNode(1).GetVar();
+			return () => (f0(v1.GetValue()) - 2);
+		},
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			const f1 = p._GetNode(1).GetBoundMethod();
+			const v2 = p._GetNode(2).GetVar();
+			const v3 = p._GetNode(3).GetVar();
+			return () => (v0.GetValue() + f1(v2.GetValue(), (v3.GetValue() + 1), 1));
 		},
 		() => "game ui",
 		p => {
@@ -3369,13 +3443,25 @@ inst.GetBehaviorInstanceFromCtor(C3.Behaviors.scrollto);if(!behInst||!behInst.Ge
 		},
 		p => {
 			const f0 = p._GetNode(0).GetBoundMethod();
-			const v1 = p._GetNode(1).GetVar();
-			return () => (f0(v1.GetValue()) - 2);
+			return () => (f0() + 500);
 		},
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => (v0.GetValue() + 1);
+		},
+		() => 0.1,
+		() => "respawn",
 		() => "replay",
-		() => 0.5,
+		() => "restart",
 		() => 5,
+		() => "home",
+		p => {
+			const f0 = p._GetNode(0).GetBoundMethod();
+			const v1 = p._GetNode(1).GetVar();
+			return () => f0(v1.GetValue());
+		},
 		() => "rule in",
+		() => 0.5,
 		() => "rule show",
 		() => "rule",
 		() => "What is your name?",
