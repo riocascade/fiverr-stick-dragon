@@ -3073,6 +3073,7 @@ this._stage=0;this._stageTimeLeft+=this._onTime}this._runtime.UpdateRender()}}Ge
 		C3.Plugins.System.Exps.random,
 		C3.Plugins.Arr.Exps.Width,
 		C3.Plugins.Arr.Exps.At,
+		C3.Plugins.Arr.Acts.Delete,
 		C3.Plugins.System.Exps.choose,
 		C3.Plugins.Sprite.Acts.SetAnim,
 		C3.Plugins.System.Cnds.EveryTick,
@@ -3128,10 +3129,11 @@ this._stage=0;this._stageTimeLeft+=this._onTime}this._runtime.UpdateRender()}}Ge
 		C3.Plugins.System.Acts.SubVar,
 		C3.Plugins.Sprite.Cnds.CompareInstanceVar,
 		C3.Behaviors.Flash.Acts.Flash,
-		C3.Plugins.Sprite.Acts.Destroy,
+		C3.Plugins.Sprite.Acts.SetVisible,
 		C3.Plugins.System.Cnds.LayerVisible,
 		C3.Plugins.Timeline.Cnds.IsPausedByTags,
 		C3.Plugins.Sprite.Cnds.OnCollision,
+		C3.Plugins.Sprite.Acts.Destroy,
 		C3.Plugins.System.Cnds.PickLastCreated,
 		C3.Plugins.Timeline.Acts.StopAllTimelines,
 		C3.Plugins.Sprite.Acts.SetOpacity,
@@ -3209,7 +3211,8 @@ this._stage=0;this._stageTimeLeft+=this._onTime}this._runtime.UpdateRender()}}Ge
 		{ACTION_HOME: 0},
 		{ACTION_RESPAWN: 0},
 		{mapNo: 0},
-		{towerNo: 0}
+		{towerNo: 0},
+		{leftMargin: 0}
 	];
 }
 
@@ -3340,9 +3343,14 @@ this._stage=0;this._stageTimeLeft+=this._onTime}this._runtime.UpdateRender()}}Ge
 			const v1 = p._GetNode(1).GetVar();
 			return () => n0.ExpObject(v1.GetValue(), 1);
 		},
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => v0.GetValue();
+		},
 		() => 4,
 		() => "populate",
-		() => 3,
+		() => 5,
+		() => "",
 		p => {
 			const f0 = p._GetNode(0).GetBoundMethod();
 			return () => f0(1, 2, 3);
@@ -3362,11 +3370,6 @@ this._stage=0;this._stageTimeLeft+=this._onTime}this._runtime.UpdateRender()}}Ge
 			return () => n0.ExpObject(v1.GetValue(), 0);
 		},
 		() => "answer",
-		() => "",
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => v0.GetValue();
-		},
 		p => {
 			const f0 = p._GetNode(0).GetBoundMethod();
 			const v1 = p._GetNode(1).GetVar();
@@ -3387,6 +3390,7 @@ this._stage=0;this._stageTimeLeft+=this._onTime}this._runtime.UpdateRender()}}Ge
 			return () => Math.round(f0(1, (v1.GetValue() - 1)));
 		},
 		() => 1200,
+		() => 3,
 		p => {
 			const f0 = p._GetNode(0).GetBoundMethod();
 			const v1 = p._GetNode(1).GetVar();
@@ -3414,6 +3418,14 @@ this._stage=0;this._stageTimeLeft+=this._onTime}this._runtime.UpdateRender()}}Ge
 			const v0 = p._GetNode(0).GetVar();
 			const v1 = p._GetNode(1).GetVar();
 			return () => (v0.GetValue() + v1.GetValue());
+		},
+		p => {
+			const f0 = p._GetNode(0).GetBoundMethod();
+			const v1 = p._GetNode(1).GetVar();
+			const f2 = p._GetNode(2).GetBoundMethod();
+			const f3 = p._GetNode(3).GetBoundMethod();
+			const v4 = p._GetNode(4).GetVar();
+			return () => f0(v1.GetValue(), Math.round(f2(0, (f3(v4.GetValue()) - 1))), 1);
 		},
 		p => {
 			const f0 = p._GetNode(0).GetBoundMethod();
@@ -3514,16 +3526,11 @@ this._stage=0;this._stageTimeLeft+=this._onTime}this._runtime.UpdateRender()}}Ge
 			return () => (v0.GetValue() + 1);
 		},
 		() => 0.1,
+		() => 0.9,
 		() => "respawn",
 		() => "replay",
 		() => "restart",
-		() => 5,
 		() => "home",
-		p => {
-			const f0 = p._GetNode(0).GetBoundMethod();
-			const v1 = p._GetNode(1).GetVar();
-			return () => f0(v1.GetValue());
-		},
 		() => "rule in",
 		() => 0.5,
 		() => "rule show",
