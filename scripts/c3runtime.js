@@ -3073,9 +3073,9 @@ this._stage=0;this._stageTimeLeft+=this._onTime}this._runtime.UpdateRender()}}Ge
 		C3.Plugins.System.Exps.random,
 		C3.Plugins.Arr.Exps.Width,
 		C3.Plugins.Arr.Exps.At,
-		C3.Plugins.Arr.Acts.Delete,
 		C3.Plugins.System.Exps.choose,
 		C3.Plugins.Sprite.Acts.SetAnim,
+		C3.Plugins.Arr.Acts.Delete,
 		C3.Plugins.System.Cnds.EveryTick,
 		C3.Plugins.Spritefont2.Acts.SetText,
 		C3.Plugins.System.Cnds.CompareVar,
@@ -3083,18 +3083,19 @@ this._stage=0;this._stageTimeLeft+=this._onTime}this._runtime.UpdateRender()}}Ge
 		C3.Plugins.System.Exps.mid,
 		C3.Plugins.System.Cnds.ForEach,
 		C3.Plugins.Sprite.Cnds.IsOverlapping,
+		C3.Plugins.System.Cnds.Compare,
+		C3.Plugins.Sprite.Exps.IID,
 		C3.Behaviors.MoveTo.Acts.MoveToPosition,
 		C3.Plugins.Sprite.Exps.X,
 		C3.Plugins.Sprite.Exps.Y,
 		C3.Plugins.System.Cnds.Else,
 		C3.Plugins.System.Cnds.For,
-		C3.Plugins.System.Exps.len,
-		C3.Plugins.System.Cnds.Compare,
 		C3.Plugins.System.Exps.loopindex,
 		C3.Plugins.System.Cnds.While,
+		C3.Plugins.System.Exps.len,
+		C3.Plugins.Browser.Acts.ConsoleLog,
 		C3.Plugins.System.Exps.find,
 		C3.Plugins.Sprite.Cnds.PickByUID,
-		C3.Plugins.Browser.Acts.ConsoleLog,
 		C3.Plugins.System.Acts.CreateObject,
 		C3.Plugins.System.Exps.layoutheight,
 		C3.Plugins.Sprite.Acts.Spawn,
@@ -3138,6 +3139,7 @@ this._stage=0;this._stageTimeLeft+=this._onTime}this._runtime.UpdateRender()}}Ge
 		C3.Plugins.Timeline.Acts.StopAllTimelines,
 		C3.Plugins.Sprite.Acts.SetOpacity,
 		C3.Plugins.Timeline.Acts.SetTimelineTimeByTags,
+		C3.Plugins.Arr.Acts.SetSize,
 		C3.Plugins.Arr.Acts.Push,
 		C3.Plugins.Arr.Acts.SetXY
 		];
@@ -3212,7 +3214,8 @@ this._stage=0;this._stageTimeLeft+=this._onTime}this._runtime.UpdateRender()}}Ge
 		{ACTION_RESPAWN: 0},
 		{mapNo: 0},
 		{towerNo: 0},
-		{leftMargin: 0}
+		{leftMargin: 0},
+		{maxRound: 0}
 	];
 }
 
@@ -3343,10 +3346,6 @@ this._stage=0;this._stageTimeLeft+=this._onTime}this._runtime.UpdateRender()}}Ge
 			const v1 = p._GetNode(1).GetVar();
 			return () => n0.ExpObject(v1.GetValue(), 1);
 		},
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => v0.GetValue();
-		},
 		() => 4,
 		() => "populate",
 		() => 5,
@@ -3368,6 +3367,10 @@ this._stage=0;this._stageTimeLeft+=this._onTime}this._runtime.UpdateRender()}}Ge
 			const n0 = p._GetNode(0);
 			const v1 = p._GetNode(1).GetVar();
 			return () => n0.ExpObject(v1.GetValue(), 0);
+		},
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => v0.GetValue();
 		},
 		() => "answer",
 		p => {
@@ -3402,15 +3405,6 @@ this._stage=0;this._stageTimeLeft+=this._onTime}this._runtime.UpdateRender()}}Ge
 			return () => (v0.GetValue() - 1);
 		},
 		p => {
-			const v0 = p._GetNode(0).GetVar();
-			const f1 = p._GetNode(1).GetBoundMethod();
-			const v2 = p._GetNode(2).GetVar();
-			const f3 = p._GetNode(3).GetBoundMethod();
-			const f4 = p._GetNode(4).GetBoundMethod();
-			const v5 = p._GetNode(5).GetVar();
-			return () => (v0.GetValue() + f1(v2.GetValue(), Math.round(f3(0, (f4(v5.GetValue()) - 1))), 1));
-		},
-		p => {
 			const f0 = p._GetNode(0).GetBoundMethod();
 			return () => f0();
 		},
@@ -3426,6 +3420,12 @@ this._stage=0;this._stageTimeLeft+=this._onTime}this._runtime.UpdateRender()}}Ge
 			const f3 = p._GetNode(3).GetBoundMethod();
 			const v4 = p._GetNode(4).GetVar();
 			return () => f0(v1.GetValue(), Math.round(f2(0, (f3(v4.GetValue()) - 1))), 1);
+		},
+		p => {
+			const f0 = p._GetNode(0).GetBoundMethod();
+			const v1 = p._GetNode(1).GetVar();
+			const v2 = p._GetNode(2).GetVar();
+			return () => and("find ", f0(v1.GetValue(), v2.GetValue()));
 		},
 		p => {
 			const f0 = p._GetNode(0).GetBoundMethod();
@@ -3535,49 +3535,50 @@ this._stage=0;this._stageTimeLeft+=this._onTime}this._runtime.UpdateRender()}}Ge
 		() => 0.5,
 		() => "rule show",
 		() => "rule",
-		() => "What is your name?",
+		() => 2,
+		() => "What is your name? (6)",
 		p => {
 			const n0 = p._GetNode(0);
 			return () => (n0.ExpObject() - 1);
 		},
 		() => "你叫什麼名字?",
-		() => "Where is your house?",
+		() => "Where is your house? (6)",
 		() => "你的家在哪裡?",
-		() => "The goat is on the mountain top.",
+		() => "The goat is on the mountain top. (5)",
 		() => "山羊在山上。",
-		() => "My older sister is fifteen years old.",
+		() => "My older sister is fifteen years old. (7)",
 		() => "我的姐姐十五歲。",
-		() => "My dad is an adult.",
+		() => "My dad is an adult. (7)",
 		() => "我的爸爸是大人。",
-		() => "The dog is in front of the cat.",
+		() => "The dog is in front of the cat. (7)",
 		() => "小狗在小貓前面。",
-		() => "He is twenty years old.",
+		() => "He is twenty years old. (4)",
 		() => "他二十歲。",
-		() => "She has two books.",
+		() => "She has two books. (5)",
 		() => "她有兩本書。",
-		() => "I have five birds.",
+		() => "I have five birds. (5)",
 		() => "我有五隻鳥。",
-		() => "There are six crayons in my pencil box.",
+		() => "There are six crayons in my pencil box. (10)",
 		() => "我的筆盒裡有六支蠟筆。",
-		() => "My book bag is red.",
+		() => "My book bag is red. (8)",
 		() => "我的書包是紅色的。",
-		() => "Where is the sheep?",
+		() => "Where is the sheep? (4)",
 		() => "羊在哪裡？",
-		() => "Who is this?",
+		() => "Who is this? (3)",
 		() => "這是誰？",
-		() => "I have two dogs too.",
+		() => "I also have two dogs. (6)",
 		() => "我也有兩隻狗。",
-		() => "How many kids are in your family?",
+		() => "How many kids are in your family? (7)",
 		() => "你家有幾個小孩？",
-		() => "Is your grandfather home?",
+		() => "Is your grandfather home? (7)",
 		() => "你的爺爺在家嗎？",
-		() => "I have a white eraser.",
+		() => "I have a white eraser. (10)",
 		() => "我有一個白色的橡皮擦。",
-		() => "How many adults are over there?",
+		() => "How many adults are over there? (7)",
 		() => "那裡有幾個大人？",
-		() => "Who is in front of the yellow dog?",
+		() => "Who is in front of the yellow dog? (8)",
 		() => "誰在黃色的狗前面？",
-		() => "What color is this?",
+		() => "What color is this? (6)",
 		() => "這是什麼顏色？"
 	];
 }
