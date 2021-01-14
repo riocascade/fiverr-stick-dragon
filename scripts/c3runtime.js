@@ -3074,12 +3074,12 @@ this._stage=0;this._stageTimeLeft+=this._onTime}this._runtime.UpdateRender()}}Ge
 		C3.Plugins.Arr.Exps.Width,
 		C3.Plugins.Arr.Exps.At,
 		C3.Plugins.System.Exps.choose,
-		C3.Plugins.Sprite.Acts.SetAnim,
 		C3.Plugins.Arr.Acts.Delete,
 		C3.Plugins.System.Cnds.EveryTick,
 		C3.Plugins.Spritefont2.Acts.SetText,
 		C3.Plugins.System.Cnds.CompareVar,
 		C3.Plugins.System.Cnds.TriggerOnce,
+		C3.Plugins.Sprite.Acts.SetAnim,
 		C3.Plugins.System.Exps.mid,
 		C3.Plugins.System.Cnds.ForEach,
 		C3.Plugins.Sprite.Cnds.IsOverlapping,
@@ -3178,6 +3178,7 @@ this._stage=0;this._stageTimeLeft+=this._onTime}this._runtime.UpdateRender()}}Ge
 		{no: 0},
 		{Flash: 0},
 		{heart: 0},
+		{heartMove: 0},
 		{gamePhase: 0},
 		{PHASE_POPULATE_TOWER: 0},
 		{PHASE_ADJUST_TOWER: 0},
@@ -3190,6 +3191,8 @@ this._stage=0;this._stageTimeLeft+=this._onTime}this._runtime.UpdateRender()}}Ge
 		{wrongChar: 0},
 		{charPut: 0},
 		{touchedWall: 0},
+		{previousTowerNo: 0},
+		{previousMapNo: 0},
 		{allWords: 0},
 		{questionNo: 0},
 		{gameActive: 0},
@@ -3358,10 +3361,6 @@ this._stage=0;this._stageTimeLeft+=this._onTime}this._runtime.UpdateRender()}}Ge
 			const f0 = p._GetNode(0).GetBoundMethod();
 			return () => Math.round(f0(0, 9));
 		},
-		p => {
-			const v0 = p._GetNode(0).GetVar();
-			return () => and("map", v0.GetValue());
-		},
 		() => "question",
 		p => {
 			const n0 = p._GetNode(0);
@@ -3373,6 +3372,10 @@ this._stage=0;this._stageTimeLeft+=this._onTime}this._runtime.UpdateRender()}}Ge
 			return () => v0.GetValue();
 		},
 		() => "answer",
+		p => {
+			const v0 = p._GetNode(0).GetVar();
+			return () => and("map", v0.GetValue());
+		},
 		p => {
 			const f0 = p._GetNode(0).GetBoundMethod();
 			const v1 = p._GetNode(1).GetVar();
@@ -3516,6 +3519,17 @@ this._stage=0;this._stageTimeLeft+=this._onTime}this._runtime.UpdateRender()}}Ge
 			const n5 = p._GetNode(5);
 			const n6 = p._GetNode(6);
 			return () => f0("game ui", f1("game objects", n2.ExpObject(), n3.ExpObject()), f4("game objects", n5.ExpObject(), n6.ExpObject()));
+		},
+		p => {
+			const f0 = p._GetNode(0).GetBoundMethod();
+			const f1 = p._GetNode(1).GetBoundMethod();
+			const n2 = p._GetNode(2);
+			const n3 = p._GetNode(3);
+			const f4 = p._GetNode(4).GetBoundMethod();
+			const n5 = p._GetNode(5);
+			const n6 = p._GetNode(6);
+			const f7 = p._GetNode(7).GetBoundMethod();
+			return () => (f0("game ui", f1("game objects", n2.ExpObject(), n3.ExpObject()), f4("game objects", n5.ExpObject(), n6.ExpObject())) + f7((-20), 20));
 		},
 		p => {
 			const f0 = p._GetNode(0).GetBoundMethod();
